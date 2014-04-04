@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>displayName</key>
+	<string>Sal</string>
+	<key>includeFiles</key>
+	<array>
+		<string>/Library/Server/Web/Config/apache2/httpd_sal.conf</string>
+	</array>
+	<key>installationIndicatorFilePath</key>
+	<string>/Library/Server/Web/Data/webapps/sal.wsgi</string>
+	<key>launchKeys</key>
+	<array/>
+	<key>name</key>
+	<string>com.grahamgilbert.sal.webapp</string>
+	<key>requiredModuleNames</key>
+	<array>
+		<string>wsgi_module</string>
+	</array>
+</dict>
+</plist>
