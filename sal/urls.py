@@ -6,19 +6,25 @@ from django.conf import settings
 from django.contrib import admin
 admin.autodiscover()
 
+if settings.RUNNING_ON_APACHE:
+    sub_path = ''
+else:        
+    sub_path = settings.SUB_PATH
+
+
 urlpatterns = patterns('',
     # Examples:
-    url(r'^login/$', 'django.contrib.auth.views.login'),
-    url(r'^logout/$', 'django.contrib.auth.views.logout_then_login'),
-    url(r'^changepassword/$', 'django.contrib.auth.views.password_change'),
-    url(r'^changepassword/done/$', 'django.contrib.auth.views.password_change_done'),
-   	url(r'^', include('server.urls')),
+    url(r'^%slogin/$' % sub_path, 'django.contrib.auth.views.login'),
+    url(r'^%slogout/$' % sub_path, 'django.contrib.auth.views.logout_then_login'),
+    url(r'^%schangepassword/$' % sub_path, 'django.contrib.auth.views.password_change'),
+    url(r'^%schangepassword/done/$' % sub_path, 'django.contrib.auth.views.password_change_done'),
+    url(r'^%s' % sub_path, include('server.urls')),
     # Uncomment the admin/doc line below to enable admin documentation:
-    url(r'^admin/doc/', include('django.contrib.admindocs.urls')),
+    url(r'^%sadmin/doc/' % sub_path, include('django.contrib.admindocs.urls')),
 
     # Uncomment the next line to enable the admin:
-    url(r'^admin/', include(admin.site.urls)),
-    #url(r'^$', 'namer.views.index', name='home'),
+    url(r'^%sadmin/' % sub_path, include(admin.site.urls)),
+    #url(r'^%s$' % sub_path, 'namer.views.index', name='home'),
 
 )
 if settings.DEBUG:

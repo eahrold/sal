@@ -12,6 +12,20 @@ AUTH_PROFILE_MODULE = "sal.UserProfile"
 DISPLAY_NAME = 'Sal'
 MANAGERS = ADMINS
 
+
+# Set this to true if you're running on Apache via wsgi module
+RUNNING_ON_APACHE=False
+
+# set this to the subpath you plan on running 
+# make sure to include a trailing slash (e.g. sal/ )
+RUN_ON_SUBPATH=[True,'sal/']
+
+if RUN_ON_SUBPATH[0]:
+    SUB_PATH = RUN_ON_SUBPATH[1]
+else:
+    SUB_PATH=''
+
+
 # The order plugins (if they're able to be shown on that particular page) will be displayed in. If not listed here, will be listed alphabetically after.
 PLUGIN_ORDER = ['Activity','Status','OperatingSystem','Uptime', 'Memory']
 
@@ -64,7 +78,7 @@ ALLOWED_HOSTS = ['*']
 # http://en.wikipedia.org/wiki/List_of_tz_zones_by_name
 # although not all choices may be available on all operating systems.
 # In a Windows environment this must be set to your system time zone.
-TIME_ZONE = 'Europe/London'
+TIME_ZONE = 'America/Chicago'
 
 # Language code for this installation. All choices can be found here:
 # http://www.i18nguy.com/unicode/language-identifiers.html
@@ -100,7 +114,10 @@ STATIC_ROOT = os.path.join(PROJECT_DIR, 'static')
 
 # URL prefix for static files.
 # Example: "http://example.com/static/", "http://static.example.com/"
-STATIC_URL = '/static/'
+if RUNNING_ON_APACHE:
+    STATIC_URL = '/static_sal/'
+else:
+    STATIC_URL = os.path.join('/',SUB_PATH,'static/')
 
 # Additional locations of static files
 STATICFILES_DIRS = (
@@ -148,8 +165,10 @@ MIDDLEWARE_CLASSES = (
     # 'django.middleware.clickjacking.XFrameOptionsMiddleware',
 )
 
-LOGIN_URL='/login/'
-LOGIN_REDIRECT_URL='/'
+# Set the login url 
+LOGIN_URL =os.path.join('/',SUB_PATH,'login/')
+LOGOUT_URL=os.path.join('/',SUB_PATH,'logout/')
+LOGIN_REDIRECT_URL=os.path.join('/',SUB_PATH,'manage/')
 
 ROOT_URLCONF = 'sal.urls'
 
