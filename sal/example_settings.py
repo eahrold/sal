@@ -1,6 +1,6 @@
 # Django settings for sal project.
 import os
-DEBUG = True
+DEBUG = False
 TEMPLATE_DEBUG = DEBUG
 APPEND_SLASH=False
 PROJECT_DIR = os.path.abspath(os.path.join(os.path.dirname(os.path.abspath(__file__)), os.path.pardir))
@@ -46,6 +46,19 @@ HIDE_PLUGIN_FROM_MACHINE_GROUP = {
 }
 
 PLUGIN_DIR = os.path.join(PROJECT_DIR, 'plugins')
+
+# If you want to have a default machine group, define this to the key of
+# that group.
+#DEFAULT_MACHINE_GROUP_KEY = ''
+
+# Facts which will have historical data kept in addition to the most
+# recent instanct of that fact.
+HISTORICAL_FACTS = [
+    # 'memoryfree_mb',
+]
+
+# How long to keep historical facts around before pruning them.
+HISTORICAL_DAYS = 180
 
 EXCLUDED_FACTS = {
     'sshrsakey',
@@ -230,3 +243,13 @@ LOGGING = {
         },
     }
 }
+if 'DYNO' in os.environ:
+  # Parse database configuration from $DATABASE_URL
+  import dj_database_url
+  DATABASES['default'] =  dj_database_url.config()
+
+  # Honor the 'X-Forwarded-Proto' header for request.is_secure()
+  SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
+
+  # Allow all host headers
+  ALLOWED_HOSTS = ['*']

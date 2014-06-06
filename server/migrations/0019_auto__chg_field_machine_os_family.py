@@ -9,15 +9,13 @@ class Migration(SchemaMigration):
 
     def forwards(self, orm):
 
-        # Changing field 'Machine.memory_kb'
-        #db.alter_column(u'server_machine', 'memory_kb', self.gf('django.db.models.fields.BigIntegerField')())
-        db.delete_column('server_machine', 'memory_kb')
-        db.add_column('server_machine', 'memory_kb', self.gf('django.db.models.fields.BigIntegerField')())
+        # Changing field 'Machine.os_family'
+        db.alter_column(u'server_machine', 'os_family', self.gf('django.db.models.fields.CharField')(max_length=256))
 
     def backwards(self, orm):
 
-        # Changing field 'Machine.memory_kb'
-        db.alter_column(u'server_machine', 'memory_kb', self.gf('django.db.models.fields.CharField')(max_length=256, null=True))
+        # Changing field 'Machine.os_family'
+        db.alter_column(u'server_machine', 'os_family', self.gf('django.db.models.fields.CharField')(max_length=256, null=True))
 
     models = {
         u'auth.group': {
@@ -59,9 +57,15 @@ class Migration(SchemaMigration):
         u'server.businessunit': {
             'Meta': {'ordering': "['name']", 'object_name': 'BusinessUnit'},
             u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'key': ('django.db.models.fields.CharField', [], {'max_length': '255', 'unique': 'True', 'null': 'True', 'blank': 'True'}),
             'name': ('django.db.models.fields.CharField', [], {'max_length': '100'}),
             'users': ('django.db.models.fields.related.ManyToManyField', [], {'to': u"orm['auth.User']", 'symmetrical': 'False'})
+        },
+        u'server.condition': {
+            'Meta': {'ordering': "['condition_name']", 'object_name': 'Condition'},
+            'condition_data': ('django.db.models.fields.TextField', [], {}),
+            'condition_name': ('django.db.models.fields.TextField', [], {}),
+            u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
+            'machine': ('django.db.models.fields.related.ForeignKey', [], {'to': u"orm['server.Machine']"})
         },
         u'server.fact': {
             'Meta': {'ordering': "['fact_name']", 'object_name': 'Fact'},
@@ -80,16 +84,20 @@ class Migration(SchemaMigration):
             'hd_percent': ('django.db.models.fields.CharField', [], {'max_length': '256', 'null': 'True', 'blank': 'True'}),
             'hd_space': ('django.db.models.fields.CharField', [], {'max_length': '256', 'null': 'True', 'blank': 'True'}),
             'hd_total': ('django.db.models.fields.CharField', [], {'max_length': '256', 'null': 'True', 'blank': 'True'}),
-            'hostname': ('django.db.models.fields.CharField', [], {'max_length': '256', 'null': 'True'}),
+            'hostname': ('django.db.models.fields.CharField', [], {'max_length': '256', 'null': 'True', 'blank': 'True'}),
             u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
             'last_checkin': ('django.db.models.fields.DateTimeField', [], {'null': 'True', 'blank': 'True'}),
+            'last_puppet_run': ('django.db.models.fields.DateTimeField', [], {'null': 'True', 'blank': 'True'}),
             'machine_group': ('django.db.models.fields.related.ForeignKey', [], {'to': u"orm['server.MachineGroup']"}),
             'machine_model': ('django.db.models.fields.CharField', [], {'max_length': '256', 'null': 'True', 'blank': 'True'}),
             'manifest': ('django.db.models.fields.CharField', [], {'max_length': '256'}),
             'memory': ('django.db.models.fields.CharField', [], {'max_length': '256', 'null': 'True', 'blank': 'True'}),
-            'memory_kb': ('django.db.models.fields.BigIntegerField', [], {'default': '0'}),
+            'memory_kb': ('django.db.models.fields.IntegerField', [], {'default': '0'}),
             'munki_version': ('django.db.models.fields.CharField', [], {'max_length': '256', 'null': 'True', 'blank': 'True'}),
             'operating_system': ('django.db.models.fields.CharField', [], {'max_length': '256'}),
+            'os_family': ('django.db.models.fields.CharField', [], {'default': "'Darwin'", 'max_length': '256'}),
+            'puppet_errors': ('django.db.models.fields.IntegerField', [], {'default': '0'}),
+            'puppet_version': ('django.db.models.fields.TextField', [], {'null': 'True', 'blank': 'True'}),
             'report': ('django.db.models.fields.TextField', [], {'null': 'True'}),
             'serial': ('django.db.models.fields.CharField', [], {'unique': 'True', 'max_length': '100'}),
             'warnings': ('django.db.models.fields.IntegerField', [], {'default': '0'})
@@ -98,8 +106,24 @@ class Migration(SchemaMigration):
             'Meta': {'ordering': "['name']", 'object_name': 'MachineGroup'},
             'business_unit': ('django.db.models.fields.related.ForeignKey', [], {'to': u"orm['server.BusinessUnit']"}),
             u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'manifest': ('django.db.models.fields.CharField', [], {'max_length': '256'}),
+            'key': ('django.db.models.fields.CharField', [], {'max_length': '255', 'unique': 'True', 'null': 'True', 'blank': 'True'}),
             'name': ('django.db.models.fields.CharField', [], {'max_length': '100'})
+        },
+        u'server.pendingappleupdate': {
+            'Meta': {'ordering': "['display_name']", 'unique_together': "(('machine', 'update'),)", 'object_name': 'PendingAppleUpdate'},
+            'display_name': ('django.db.models.fields.CharField', [], {'max_length': '256', 'null': 'True', 'blank': 'True'}),
+            u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
+            'machine': ('django.db.models.fields.related.ForeignKey', [], {'to': u"orm['server.Machine']"}),
+            'update': ('django.db.models.fields.CharField', [], {'max_length': '256', 'null': 'True', 'blank': 'True'}),
+            'update_version': ('django.db.models.fields.CharField', [], {'max_length': '256', 'null': 'True', 'blank': 'True'})
+        },
+        u'server.pendingupdate': {
+            'Meta': {'ordering': "['display_name']", 'unique_together': "(('machine', 'update'),)", 'object_name': 'PendingUpdate'},
+            'display_name': ('django.db.models.fields.CharField', [], {'max_length': '256', 'null': 'True', 'blank': 'True'}),
+            u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
+            'machine': ('django.db.models.fields.related.ForeignKey', [], {'to': u"orm['server.Machine']"}),
+            'update': ('django.db.models.fields.CharField', [], {'max_length': '256', 'null': 'True', 'blank': 'True'}),
+            'update_version': ('django.db.models.fields.CharField', [], {'max_length': '256', 'null': 'True', 'blank': 'True'})
         },
         u'server.userprofile': {
             'Meta': {'object_name': 'UserProfile'},

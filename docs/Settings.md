@@ -76,3 +76,29 @@ EXCLUDED_CONDTIONS = {
     'ipv4_address',
 }
 ```
+
+## DEFAULT_MACHINE_GROUP_KEY
+
+By default, all machine submissions must include a machine group key otherwise an error will occur. By defining this value to an existing machine group key then machines without a group key already defined in its preferences will be placed into this group. This can be used, for example, to determine which machines have not been setup properly with the correct machine group.
+
+```python
+DEFAULT_MACHINE_GROUP_KEY = 'x1eru38unri08badpo0ux4ahz043hapbyqyixdz482l047u9xe60nn6cux1sj0ad5bq7hwblyzjpmaqb17psygfwlfeo4x6hozb1jejaf1nee6paj68glducdt5575dz'
+```
+
+## HISTORICAL_FACTS
+
+Normally only the most recent fact is recorded for a machine. Any facts defined here will also have historical data from each run kept in addition to the most recent run.
+
+```python
+HISTORICAL_FACTS = [
+    'memoryfree_mb',
+]
+```
+
+## HISTORICAL_DAYS
+
+The number of days to keep historical data. Each historical fact can be recorded once per hour, per fact, per machine. If you have a large number of machines that stay on 24/7 you might consider decreasing this number. Defaults to 180.
+
+```python
+HISTORICAL_DAYS = 180
+```

@@ -1,9 +1,9 @@
-#!/usr/bin/env python
+#!/usr/bin/python
 #
 #    postflight
 #        Submits inventory to an instance of Sal
 #
-#    Last Revised - 2014-01-14
+#    Last Revised - 2014-04-09
 
 import sys
 sys.path.append('/usr/local/sal')
@@ -14,7 +14,8 @@ import urllib2
 try:
     from munkilib import FoundationPlist
 except:
-    import FoundationPlist
+    sys.path.append('/usr/local/munki')
+    from munkilib import FoundationPlist
 from Foundation import *
 import subprocess
 import base64
@@ -145,7 +146,11 @@ except:
     print stderr
 
 # Get the serial number
-serial = report['MachineInfo']['serial_number']
+try:
+    serial = report['MachineInfo']['serial_number']
+except:
+    print 'Unable to get MachineInfo from ManagedInstallReport.plist. This is usually due to running Munki in Apple Software only mode.'
+    sys.exit(0)
 
 # Get Machine Name
 command = ['/usr/sbin/scutil', '--get', 'ComputerName']
@@ -153,6 +158,9 @@ task = subprocess.Popen(command, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
 (stdout, stderr) = task.communicate()
 name = stdout
 data = {}
+
+# Set the OS family
+report['os_family'] = 'Darwin'
 
 # Compress the report
 plist = FoundationPlist.writePlistToString(report)

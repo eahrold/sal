@@ -2,7 +2,11 @@ from django import template
 from django.shortcuts import get_object_or_404
 from server.models import *
 from datetime import datetime
+import dateutil.parser
 from django.template.defaultfilters import date
+from django.utils.timezone import utc
+import pytz
+from django.conf import settings
 
 register = template.Library()
 
@@ -13,7 +17,7 @@ def humanreadablesize(kbytes):
         kbytes = float(kbytes)
     except (TypeError, ValueError, UnicodeDecodeError):
         return "unknown"
-        
+
     units = [(" KB", 2**10), (" MB", 2**20), (" GB", 2**30), (" TB", 2**40)]
     for suffix, limit in units:
         if kbytes > limit:
@@ -31,12 +35,13 @@ def bu_machine_count(bu_id):
     machine_groups = business_unit.machinegroup_set.all()
     count = 0
     for machinegroup in machine_groups:
-        count = count + machinegroup.machine_set.count()    
+        count = count + machinegroup.machine_set.count()
     return count
 
 @register.filter
 def convert_datetime(string):
-    """Converts a string into a formatted date"""
-    the_date = datetime.strptime(string, "%Y-%m-%d %H:%M:%S +0000")
-    return date(the_date, "N j, Y, P")
-    
+    """Converts a string into a date object"""
+    the_date = dateutil.parser.parse(string).replace(tzinfo=utc)
+#
+    #return date(the_date, "Y-m-d H:i")
+    return the_date

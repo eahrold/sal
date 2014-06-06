@@ -24,9 +24,15 @@ Change into the Sal directory and update the code from GitHub
 	cd sal
 	git pull
 	
+Install any extra dependencies:
+	
+	pip install -r setup/requirements.txt
+	
 Run the migration so your database is up to date
 	
 	python manage.py migrate
+	
+If you get errors about a failed migration, run ``python manage.py migrate`` again. Some errors are just temporary.
 
 Finally, as root (not saluser) restart Apache
 

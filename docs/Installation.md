@@ -6,6 +6,8 @@ Sal is split into Business Units, and then subdivided into Groups. Each customer
 
 ##Server installation
 
+If you aren't comfortable Linux, it's recommended your [first installation is on Heroku](https://github.com/grahamgilbert/sal/blob/master/docs/Deploying_on_Heroku.md) who will handle the server configuration for you.
+
 See [Installation_on_Ubuntu_12.md](https://github.com/grahamgilbert/sal/blob/master/docs/Installation_on_Ubuntu_12.md) (or for [CentOS](https://github.com/grahamgilbert/sal/blob/master/docs/Installation_on_CentOS6.md))for server installation docs. If you are installing on a different operating system, please ensure you have Python 2.7 installed.
 
 ## Server upgrade
@@ -18,7 +20,7 @@ Log in with the username and password you set when performing the server setup. 
 
 ### User Levels
 
-There are currently the User Levels used by Sal. To set these, log into the admin page (link at the top of the Sal screen), and choose User Profile from the menu. The Stats Only user level is not used at this time, and should not be assigned to a user.
+There are currently three User Levels used by Sal. To set these, log into the admin page (link at the top of the Sal screen), and choose User Profile from the menu. The Stats Only user level is not used at this time, and should not be assigned to a user.
 
 #### Global Administrator
 
@@ -42,6 +44,10 @@ fi
 ```
 
 The configuration of the server, and the Machine Group key is from ``/Library/Preferences/com.grahamgilbert.sal``. Plists, MCX (untested, but should work) and Profiles can be used.
+
+### Using custom Facts
+
+If you are using [Puppet](http://puppetlabs.com) to manage your Macs, you can deploy custom Facts in the usual manner using pluginsync. If you're not using Puppet, you can still utilise custom Facts. You should deploy the ``.rb`` files to ``/usr/local/sal/facter``. If you want to use [external Facts](http://docs.puppetlabs.com/guides/custom_facts.html#external-facts), you can deploy them to the usual location (``/etc/facter/facts.d/``).
 
 ### Example
 
