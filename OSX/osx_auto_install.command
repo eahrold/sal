@@ -34,7 +34,7 @@ pre_condition_test(){
 	[[ -z $(which git) ]] && cecho alert "you must first install git. you can download it from Apple." && exit 1
 	
 	if [[ $EUID != 0 ]]; then
-		cecho red "This script needs to run with elevated privlidges, enter your password"
+		cecho red "This script needs to run with elevated privileges, enter your password"
 	    sudo "$0" "$@"
 	    exit 1
 	fi
@@ -83,8 +83,8 @@ install(){
 	"${VEV}" "${VIR_ENV}"
 	
 ### Copy the Project into the New Virtual Environment
-	cp -R ${COMP_PATH} "${VIR_ENV}/${PROJECT_NAME}"
-				
+	# cp -R ${COMP_PATH} "${VIR_ENV}/${PROJECT_NAME}"
+	git clone $GIT_REPO "${VIR_ENV}/${PROJECT_NAME}"
 	cd "${VIR_ENV}"
 		
 	source bin/activate
@@ -234,7 +234,7 @@ check_ID(){
 			break
 		else
 			cecho alert "That %2 is in use"
-			read -e -p "Please specify another (press c to cancel autoinstll script):" ID
+			read -e -p "Please specify another (press c to cancel auto-install script):" ID
 		fi
 	done
 	
@@ -392,10 +392,10 @@ __main__(){
 					exit 1
 				fi 
 			else
-				cecho alert "That's not a valad path, please try again"
+				cecho alert "That's not a valid path, please try again"
 			fi
 		else
-			cecho alert "Please choose a POSIX Compatable Path (i.e no spaces!)"
+			cecho alert "Please choose a POSIX Compatible Path (i.e no spaces!)"
 		fi
 	done
 	install

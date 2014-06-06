@@ -17,7 +17,7 @@ MANAGERS = ADMINS
 RUNNING_ON_APACHE=False
 
 # set this to the subpath you plan on running 
-# make sure to include a trailing slash (e.g. printers/ )
+# make sure to include a trailing slash (e.g. sal/ )
 RUN_ON_SUBPATH=[True,'sal/']
 
 if RUN_ON_SUBPATH[0]:
@@ -115,7 +115,7 @@ STATIC_ROOT = os.path.join(PROJECT_DIR, 'static')
 # URL prefix for static files.
 # Example: "http://example.com/static/", "http://static.example.com/"
 if RUNNING_ON_APACHE:
-    STATIC_URL = '/static_printerinstaller/'
+    STATIC_URL = '/static_sal/'
 else:
     STATIC_URL = os.path.join('/',SUB_PATH,'static/')
 
